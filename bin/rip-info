@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
-# usage: rip-info package
-#
-# Prints information about a package installed in the current ripenv.
+## Usage: rip-info package
+##
+## Prints information about a package installed in the current ripenv.
 
 require 'rip/script'
 

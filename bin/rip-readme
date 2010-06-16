@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
-# Usage: rip-readme package
-#
-# Prints the contents of the installed package's README.
+## Usage: rip-readme package
+##
+## Prints the contents of the installed package's README.
 
 require 'rip/script'
 target = ARGV[0]

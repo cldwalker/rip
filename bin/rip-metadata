@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
-# Usage: rip-metadata PATH
-#
-# Reads package metadata
+## Usage: rip-metadata PATH
+##
+## Reads package metadata.
 
 if File.exists?(file = "#{ARGV[0]}/metadata.rip")
   puts File.read(file)

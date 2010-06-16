@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
-# usage: rip-check
-#
-# Checks that the current shell session is rip-ready and rip-valid.
-#
-# Exits 0 if so, 1 if not
+## Usage: rip-check
+##
+## Checks that the current shell session is rip-ready and rip-valid.
+##
+## Exits 0 if so, 1 if not
 
 ripdir = ENV['RIPDIR']
 

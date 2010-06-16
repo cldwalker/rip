@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
-# Usage: rip-parse deps.rip
-#        rip-parse < deps.rip
-# Parses a `.rip` file and prints a YAML representation of it to
-# standard out.
+## Usage: rip-parse deps.rip
+##        rip-parse < deps.rip
+## Parses a `.rip` file and prints a YAML representation of it to
+## standard out.
 
 require 'rip'
 

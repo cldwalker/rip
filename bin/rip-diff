@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
-# usage: rip-diff package version
-#
-# Prints a unified diff between a package versions.
-# Assumes the installed version.
+## Usage: rip-diff package version
+##
+## Prints a unified diff between a package versions.
+## Assumes the installed version.
 
 require 'rip/script'
 

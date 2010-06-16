@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
-# Usage: rip-installed NAME
-#
-# Prints all installed packages or, if NAME is given, exits 0
-# if NAME is installed and 1 if not.
+## Usage: rip-installed NAME
+##
+## Prints all installed packages or, if NAME is given, exits 0
+## if NAME is installed and 1 if not.
 
 require 'rip/script'
 

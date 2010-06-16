@@ -1,14 +1,14 @@
 #!/usr/bin/env ruby
-# Usage: rip-list [-p] RIPENV
-#
-# Displays all installed packages and their versions for RIPENV.
-# If RIPENV is omitted shows installed packages for the current
-# RIPENV.
-#
-# If -p is passed, prints in a "parseable" deps.rip format.
-#
-# If -m is passed, prints the minimal list of packages needed to
-# duplicate the current ripenv.
+## Usage: rip-list [-p] RIPENV
+##
+## Displays all installed packages and their versions for RIPENV.
+## If RIPENV is omitted shows installed packages for the current
+## RIPENV.
+##
+## If -p is passed, prints in a "parseable" deps.rip format.
+##
+## If -m is passed, prints the minimal list of packages needed to
+## duplicate the current ripenv.
 
 require 'rip/script'
 
