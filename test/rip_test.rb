@@ -29,4 +29,28 @@ class RipTest < Rip::Test
       assert_exited_with_error
     end
   end
+
+  test "rip --help prints general help" do
+    with_local_path do
+      assert_includes "Installation:", `rip --help`
+    end
+  end
+
+  test "rip with no arguments prints general help" do
+    with_local_path do
+      assert_includes "Installation:", `rip --help`
+    end
+  end
+
+  test "rip help prints general help" do
+    with_local_path do
+      assert_includes "Installation:", `rip --help`
+    end
+  end
+
+  test "rip ignores invalid option and prints general help" do
+    with_local_path do
+      assert_includes "Installation:", `rip -z`
+    end
+  end
 end
