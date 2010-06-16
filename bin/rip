@@ -45,10 +45,19 @@ while ARGV[0] =~ /^-/
   end
 end
 
-exec "rip --help" if ARGV.empty? || ARGV[0] == "help"
+exec "rip --help" if ARGV.empty? || (ARGV[0] == "help" && ARGV[1].nil?)
+
+if ARGV[0] == 'help' && (command = ARGV[1])
+  if path_dir = ENV['PATH'].split(':').find {|dir| File.exists?("#{dir}/rip-#{command}") }
+    exec "grep ^## < #{path_dir+'/rip-'+command} | cut -c4-"
+  else
+    abort "'#{command}' is not a rip command. See rip's commands with 'rip commands'."
+  end
+end
+
 begin
   exec "rip-#{ARGV.shift}", *ARGV
 rescue Errno::ENOENT
   raise unless $!.message =~ /No such file or directory.*rip-(\w+)/
-  abort "'#{$1}' is not a rip command. See rip's commands with 'rip-commands'."
+  abort "'#{$1}' is not a rip command. See rip's commands with 'rip commands'."
 end
