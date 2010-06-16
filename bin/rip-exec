@@ -1,5 +1,5 @@
 #!/bin/sh -e
-## Usage: rip-exec <ripenv> <command>
+## Usage: rip-exec RIPENV COMMAND
 ##
 ## Executes Unix command in a ripenv.
 
