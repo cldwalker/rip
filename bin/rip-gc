@@ -15,6 +15,8 @@ rip(:envs) do |ripenv|
 end
 
 packages = packages.split("\n").uniq
+packages += Dir[Rip.packages+'/*/.rip_parent'].map {|e| File.read(e) }.uniq.
+  map {|e| "#{Rip.packages}/#{e}" }
 removed  = 0
 
 (Dir[Rip.packages + '/*'] - packages).each do |unused|
