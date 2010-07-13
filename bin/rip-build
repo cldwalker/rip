@@ -34,6 +34,9 @@ synchronize(platform_package_path) do
     puts platform_package_path
   else
     cp_r package_path, platform_package_path
+    File.open(platform_package_path+"/.rip_parent", 'w') {|f|
+      f.write basename(package_path)
+    }
 
     Dir["#{platform_package_path}/**/extconf.rb"].each do |build_file|
       build_dir = File.dirname(build_file)

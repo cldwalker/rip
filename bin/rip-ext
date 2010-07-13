@@ -1,0 +1,88 @@
+#!/usr/bin/env ruby
+## Usage: rip-ext [-l] [-i] PACKAGE_PATH
+##
+## Builds and installs packages with extensions for the current ruby version
+## If -i is given, prompts user to build if extensions need building.
+## If -l (list) is given, prints packages that need to be changed for the current ruby version.
+
+require 'rip/script'
+
+list = ARGV.delete('-l') || ARGV.delete('--list')
+interactive = ARGV.delete('-i')
+
+def parent_package(pkg)
+  File.read(pkg+'/.rip_parent')
+rescue Errno::ENOENT
+  warn "Package `#{basename(pkg)}' is missing its parent and can't be rebuilt"
+end
+
+# TODO: reuse in rip-build
+def platform_name(name, parent_hash)
+  "#{Rip.packages}/#{name}-#{Rip.md5("#{parent_hash}#{Rip.platform_hash}")}"
+end
+
+def find_symlink_parent(file)
+  while parent = File.dirname(file)
+    return parent if File.symlink?(parent)
+    return nil if parent == '/'
+    file = parent
+  end
+end
+
+def read_embedded_symlink(file)
+  (parent = find_symlink_parent(file)) && file.sub(parent, File.readlink(parent))
+end
+
+def new_platform_package(package)
+  platform_name(basename(package)[/\w+/], parent_package(package).to_s[/\w{32}/])
+end
+
+def ask_to_build(to_build)
+  puts "#{to_build} package(s) have extensions to build for this ruby version."
+  print "Proceed? [y]/n "
+  answer = $stdin.gets.chomp
+  answer == '' || answer[/^y/]
+end
+
+env_packages = Dir[Rip.dir+'/**/*/**/*.bundle'].inject({}) {|acc,e|
+  if (env = e[/^#{Rip.dir}\/([^\/]+)/, 1]) && env != 'active'
+    realfile = File.symlink?(e) ? File.readlink(e) : read_embedded_symlink(e)
+    if (pkg = realfile.to_s[/^(#{Rip.packages}\/[^\/]+)/, 1])
+      (acc[env] ||= []) << pkg
+    end
+  end
+  acc
+}
+
+env_packages.each {|k,v|
+  env_packages[k] = v.uniq.select {|e|
+    (parent_hash = parent_package(e).to_s[/\w{32}/]) &&
+      e != platform_name(basename(e)[/\w+/], parent_hash)
+  }
+}
+
+answer = nil
+if interactive
+  to_build = env_packages.values.flatten.uniq.select {|e|
+    !File.directory?(new_platform_package(e))
+  }.size
+  answer = to_build.zero? || ask_to_build(to_build)
+end
+
+env_packages.each do |env, paths|
+  ENV['RIPENV'] = env
+  
+  paths.each do |path|
+    if list
+      puts path
+    else
+      built_dir = new_platform_package(path)
+      if !File.directory?(built_dir) && (interactive ? answer : true)
+        puts "Building extensions for #{basename(path)[/\w+/]} ..."
+        built_dir = rip(:build, "#{Rip.packages}/#{parent_package(path)}")
+      end
+
+      rip("ext-switch", path, built_dir) if File.directory? built_dir
+    end
+  end
+end

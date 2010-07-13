@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+## Usage: rip-ext-switch OLD_PACKAGE_PATH NEW_PACKAGE_PATH
+##
+## Switches one platform package for another
+
+require 'rip/script'
+
+# TODO: reuse in rip-uninstall
+def unlink_package(package_path)
+  Dir["#{package_path}/**/*"].each do |file|
+    file = file.sub(package_path, Rip.envdir)
+    if file[/^#{Rip.envdir}\/(man.*\.)(\d[^.]*?)$/]
+      file.sub!($1+$2, "man/man#$2/#{basename(file)}")
+    end
+
+    if File.symlink?(file)
+      File.unlink(file)
+    end
+  end
+end
+
+old_package = ARGV[0]
+new_package = ARGV[1]
+
+unless old_package && new_package
+  abort "Missing old_package and new_package"
+end
+
+unlink_package old_package
+rip(:import, new_package)
