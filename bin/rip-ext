@@ -11,7 +11,7 @@ list = ARGV.delete('-l') || ARGV.delete('--list')
 interactive = ARGV.delete('-i')
 
 def parent_package(pkg)
-  File.read(pkg+'/.rip_parent')
+  File.read(pkg+'/.rip_parent').chomp
 rescue Errno::ENOENT
   warn "Package `#{basename(pkg)}' is missing its parent and can't be rebuilt"
 end
