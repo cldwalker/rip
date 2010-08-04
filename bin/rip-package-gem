@@ -67,7 +67,7 @@ class Fetcher
 
     deps.map do |dep|
       if version == '--pre'
-        dep_version = dep.version.to_s[/[a-z]/] ? '--pre' : dep.version
+        dep_version = dep.version.to_s[/\d\.[a-z]/] ? '--pre' : dep.version
         dep_tweedle = dep_version == '--pre' ? '' : dep.tweedle
         dep_line(dep.name, dep_tweedle, dep_version)
       else
@@ -174,6 +174,7 @@ fetcher = rpg_available? ? RpgFetcher.new : GemFetcher.new
 
 
 version = fetcher.list(source) if version.nil?
+version = '--pre' if version.to_s[/\d\.[a-z]/]
 version = fetcher.list(source) unless version && version =~ /^(\d|--pre)/
 version = version.split(" ", 2).first if version && version =~ /\s/
 
