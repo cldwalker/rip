@@ -66,7 +66,13 @@ class Fetcher
     deps = deps.select { |dep| dep.type == :runtime }
 
     deps.map do |dep|
-      dep_line(dep.name, dep.tweedle, dep.version)
+      if version == '--pre'
+        dep_version = dep.version.to_s[/[a-z]/] ? '--pre' : dep.version
+        dep_tweedle = dep_version == '--pre' ? '' : dep.tweedle
+        dep_line(dep.name, dep_tweedle, dep_version)
+      else
+        dep_line(dep.name, dep.tweedle, dep.version)
+      end
     end
   end
 
@@ -108,7 +114,8 @@ class GemFetcher < Fetcher
 
     cd Rip.cache do
       begin
-        if gem("fetch", name, "-v #{version}") =~ /Downloaded (.+)/
+        opts = version == '--pre' ? version : "-v #{version}"
+        if gem("fetch", name, opts) =~ /Downloaded (.+)/
           gem_path = File.expand_path($1) + ".gem"
         else
           gem = name.dup
@@ -119,6 +126,10 @@ class GemFetcher < Fetcher
         sh("gem unpack '#{gem_path}' --target='#{Rip.packages}'") =~
           /^Unpacked gem: '(.+)'$/
         path = $1
+
+        # prerelease spec can't be fetched using `gem specification`
+        #  so grab it early from gem
+        @specification = gem("specification #{gem_path}") if version == '--pre'
       ensure
         rm_rf gem_path if File.exist?(gem_path.to_s)
       end
@@ -132,8 +143,10 @@ class GemFetcher < Fetcher
   end
 
   def specification(name, version)
-    spec = gem("specification -r #{name} -v #{version}")
-    $?.success? ? spec : nil
+    @specification ||= begin
+      spec = gem("specification -r #{name} -v #{version}")
+      $?.success? ? spec : nil
+    end
   end
 end
 
@@ -161,7 +174,7 @@ fetcher = rpg_available? ? RpgFetcher.new : GemFetcher.new
 
 
 version = fetcher.list(source) if version.nil?
-version = fetcher.list(source) unless version && version =~ /^\d/
+version = fetcher.list(source) unless version && version =~ /^(\d|--pre)/
 version = version.split(" ", 2).first if version && version =~ /\s/
 
 package_path = "#{Rip.packages}/#{source}-#{Rip.md5("#{source}#{version}")}"
