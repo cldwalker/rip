@@ -1,5 +1,5 @@
 #!/bin/sh -e
-## Usage: rip-off
-##
-## Disable shell-wide rip.
+# usage: rip-off
+#
+# Disable shell-wide rip.
 mv "$RIPDIR/active" "$RIPDIR/inactive"

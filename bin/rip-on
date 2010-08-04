@@ -1,5 +1,5 @@
 #!/bin/sh -e
-## Usage: rip-on
-##
-## Re-enable shell-wide ripenv.
+# usage: rip-off
+#
+# Re-enable shell-wide ripenv.
 mv "$RIPDIR/inactive" "$RIPDIR/active"
