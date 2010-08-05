@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+# usage: rip-sh-env RIPENV
+#
+# Front end to rip-env
+
+if ARGV[0] == '-'
+  abort '$RIPOLDENV not set' if ENV['RIPOLDENV'].nil?
+  ARGV[0] = ENV['RIPOLDENV']
+end
+
+puts <<-function
+local first='#{ARGV[0]}';
+shift;
+local previous_env=$(basename $(readlink $RIPDIR/active));
+command rip-env $first $@;
+if [ "$previous_env" != $(basename $(readlink $RIPDIR/active)) ]; then
+  export RIPOLDENV=$previous_env;
+fi;
+function
