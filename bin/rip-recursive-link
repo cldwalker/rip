@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# Usage: rip-recursive-link source target
+## Usage: rip-recursive-link SOURCE TARGET
 
 require 'pathname'
 

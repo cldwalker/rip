@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
-# usage: rip-config
-#
-# Prints sh(1) code which can be used to activate rip for the shell.
+## Usage: rip-config
+##
+## Prints sh(1) code which can be used to activate rip for the shell.
 
 RIPDIR = ENV['RIPDIR']
 RIPENV = ENV['RIPENV'] || 'active'

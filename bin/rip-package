@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# Usage: rip-package URL
+## Usage: rip-package URL
 
 require 'rip/script'
 

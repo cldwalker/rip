@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# Usage: rip-list-minimal
+## Usage: rip-list-minimal
 
 require 'rip/script'
 

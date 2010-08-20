@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
-# Usage: rip-install [-f] PATH
-#
-# Installs a library into $RIPDIR/$RIPENV
-# If -f (force) is given, doesn't check for conflicts.
-# If -p (pretend) is given, prints what would be installed.
-# If -o (only) is given, doesn't install dependencies.
+## Usage: rip-install [-f] PATH
+##
+## Installs a library into $RIPDIR/$RIPENV.
+## If -f (force) is given, doesn't check for conflicts.
+## If -p (pretend) is given, prints what would be installed.
+## If -o (only) is given, doesn't install dependencies.
 
 $-e = true
 force = ARGV.delete('-f') || ARGV.delete('--force')
