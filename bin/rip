@@ -38,6 +38,14 @@ while ARGV[0] =~ /^-/
     ENV['RIPDEBUG'] = '1'
   when '--quiet', '-q'
     ENV['RIPVERBOSE'] = ENV['RIPDEBUG'] = nil
+  when '--auto-ripenv', '-a'
+    require 'rip'
+    package = ARGV.reverse.find {|e| !e[/^-/] }
+
+    Rip.envs.each do |env|
+      ENV['RIPENV'] = env
+      break if !`rip-find-package #{package}`.chomp.empty?
+    end
   when '--help', '--h', '--he', '--hel', '--usage', 'help', nil
     exec "grep ^## < #$0 | cut -c4-"
   when '--version', 'version'
