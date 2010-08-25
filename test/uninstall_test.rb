@@ -12,7 +12,6 @@ class UninstallTest < Rip::Test
 
   test "uninstall cijoe-deps.rip" do
     rip "install #{fixture('cijoe-deps.rip')}"
-
     assert rip_list.include?('git://localhost/cijoe')
     assert File.exist?("#{@ripdir}/base/bin/cijoe")
     assert File.exist?("#{@ripdir}/base/lib/cijoe.rb")
@@ -44,5 +43,28 @@ class UninstallTest < Rip::Test
     assert !rip_list.include?('repl')
     assert !File.exist?("#{@ripdir}/base/bin/repl")
     assert !File.exist?("#{@ripdir}/base/man/man1/repl.1")
+  end
+
+  test "uninstall a dependency aborts" do
+    rip "install #{fixture('cijoe-deps.rip')}"
+    assert File.exist?("#{@ripdir}/base/lib/choice.rb")
+
+    out = rip "uninstall choice"
+
+    assert_exited_with_error out
+    error = "Can't uninstall since these packages depend on it: cijoe"
+    assert_equal error, out.chomp
+    assert File.exist?("#{@ripdir}/base/lib/choice.rb")
+  end
+
+  test "uninstall a dependency with force" do
+    rip "install #{fixture('cijoe-deps.rip')}"
+    assert File.exist?("#{@ripdir}/base/lib/choice.rb")
+
+    out = rip "uninstall -f choice"
+
+    assert_exited_successfully out
+    assert_equal "choice (8b12556493) uninstalled", out.chomp
+    assert !File.exist?("#{@ripdir}/base/lib/choice.rb")
   end
 end

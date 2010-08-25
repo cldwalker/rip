@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
-# Usage: rip-uninstall PACKAGE
+# Usage: rip-uninstall [-f] PACKAGE
 # Uninstalls a library from $RIPENV
+# If -f (force) is given, allows any package to be uninstalled.
 #
 # Steps:
 #   Reads $RIPDIR/$RIPENV/$RIPENV.ripenv
@@ -9,8 +10,26 @@
 
 require 'rip/script'
 
+force = ARGV.delete('-f') || ARGV.delete('--force')
 name    = ARGV[0]
 package = nil
+
+# Packages mapped to package directories that depend on them
+def reverse_deps(options={})
+  packages = rip(:installed).split("\n")
+  packages.inject({}) {|acc, pkg|
+    package_deps(pkg).each {|dep|
+      name = Package.new(:source=>dep).name
+      (acc[name] ||=[]) << pkg
+    }
+    acc
+  }
+end
+
+def package_deps(pkg)
+  file = "#{pkg}/deps.rip"
+  File.exist?(file) ? File.read(file).split("\n").map {|e| e[/\S+/] } : []
+end
 
 # Find package from name
 # TODO turn into a seperate bin
@@ -22,6 +41,11 @@ end
 
 if !package_path
   abort "#{name} not installed"
+end
+
+if !force && (rdeps = reverse_deps[name])
+  rdeps = rdeps.map {|e| e[/([^\/]+?)-.{32}$/, 1] }.join(', ')
+  abort "Can't uninstall since these packages depend on it: #{rdeps}"
 end
 
 package_path = package_path.chomp
