@@ -120,6 +120,17 @@ module Rip
       $!.nil? || $!.is_a?(SystemExit) && $!.success?
     end
 
+    def find_package(name)
+      name = Package.new(:source=>name).name
+
+      rip(:installed).detect do |path|
+        if (package = metadata(path)) && package.name == name
+          package.path = path.chomp
+          return package
+        end
+      end
+    end
+
     # Obtain a mutually exclusive lock to operate on a path safely
     def synchronize(path)
       lockfile = "#{path}.lock"

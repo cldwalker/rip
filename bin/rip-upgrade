@@ -7,7 +7,5 @@ $-e = true
 
 require 'rip/script'
 
-abort "Need a package" unless ARGV[0]
-
-rip :uninstall, Package.new(:source=>ARGV[0]).name
+rip :uninstall, ARGV[0]
 rip :install, *ARGV

@@ -10,7 +10,7 @@ class UninstallTest < Rip::Test
     rip("list-minimal").split("\n").map {|e| e[/^\S+/] }
   end
 
-  test "uninstall cijoe-deps.rip" do
+  def uninstall_cijoe(name)
     rip "install #{fixture('cijoe-deps.rip')}"
 
     assert rip_list.include?('git://localhost/cijoe')
@@ -18,7 +18,7 @@ class UninstallTest < Rip::Test
     assert File.exist?("#{@ripdir}/base/lib/cijoe.rb")
     assert File.exist?("#{@ripdir}/base/lib/cijoe/build.rb")
 
-    out = rip "uninstall cijoe"
+    out = rip "uninstall #{name}"
 
     assert_exited_successfully out
     assert_equal "cijoe (0441988287) uninstalled", out.chomp
@@ -27,6 +27,14 @@ class UninstallTest < Rip::Test
     assert !File.exist?("#{@ripdir}/base/bin/cijoe")
     assert !File.exist?("#{@ripdir}/base/lib/cijoe.rb")
     assert !File.exist?("#{@ripdir}/base/lib/cijoe/build.rb")
+  end
+
+  test "uninstall cijoe-deps.rip" do
+    uninstall_cijoe 'cijoe'
+  end
+
+  test "uninstall git url" do
+    uninstall_cijoe 'git://localhost/cijoe'
   end
 
   test "uninstall repl gem" do
