@@ -21,7 +21,7 @@ def symlink_or_expand(source, target)
     recursive_link(source, target)
   else
     target.unlink if target.symlink?
-    target.make_symlink(source.realpath)
+    target.make_symlink(source.to_s)
   end
 end
 
