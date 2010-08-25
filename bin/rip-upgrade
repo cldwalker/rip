@@ -3,8 +3,6 @@
 #
 # Upgrades package to the latest version
 
-$-e = true
-
 require 'rip/script'
 
 rip :uninstall, ARGV[0]
