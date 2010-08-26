@@ -1,9 +1,12 @@
 #!/usr/bin/env ruby
-# usage: rip-gc
+# Usage: rip-gc [-p]
 #
 # Removes unused .packages/
+# If -p (pretend) is given, prints what would be removed.
 
 require 'rip/script'
+
+pretend = ARGV.delete('-p') || ARGV.delete('--pretend')
 
 packages = []
 
@@ -34,7 +37,8 @@ removed  = 0
 (Dir[Rip.packages + '/*'] - packages).each do |unused|
   removed += 1
   debug "removing #{unused}"
-  rm_rf unused
+
+  pretend ? puts(unused) : rm_rf(unused)
 end
 
-info "removed #{removed} unused packages"
+info "removed #{removed} unused packages" unless pretend
