@@ -40,7 +40,8 @@ while ARGV[0] =~ /^-/
     ENV['RIPVERBOSE'] = ENV['RIPDEBUG'] = nil
   when '--auto-ripenv', '-a'
     require 'rip'
-    package = ARGV.reverse.find {|e| !e[/^-/] }
+    index = (cmd = ARGV.find {|e| !e[/^-/] }) && ARGV.index(cmd)
+    package = index ? ARGV[index + 1] : ''
 
     Rip.envs.each do |env|
       ENV['RIPENV'] = env
